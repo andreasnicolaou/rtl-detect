@@ -115,13 +115,13 @@ RtlLanguageDetector.isRtlLanguage('he'); // true
 
 ## API
 
-| Function/Export         | Signature                                         | Description                                                                   |
-| ----------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------- |
-| **isRtlLanguage**       | `(locale: string): boolean`                       | Returns `true` if the locale or language code is right-to-left.               |
-| **getTextDirection**    | `(locale: string): 'rtl' \| 'ltr'`                | Returns the text direction for the given locale.                              |
-| **getRtlLanguageCodes** | `(): readonly string[]`                           | Returns a frozen array of all supported RTL language codes.                   |
-| **parseLocale**         | `(locale: string): ParsedLocaleInfo \| undefined` | Parses a locale string into its language and country code components.         |
-| **RtlLanguageDetector** | `class`                                           | Static class with all the above as static methods.                            |
+| Function/Export         | Signature                                         | Description                                                           |
+| ----------------------- | ------------------------------------------------- | --------------------------------------------------------------------- |
+| **isRtlLanguage**       | `(locale: string): boolean`                       | Returns `true` if the locale or language code is right-to-left.       |
+| **getTextDirection**    | `(locale: string): 'rtl' \| 'ltr'`                | Returns the text direction for the given locale.                      |
+| **getRtlLanguageCodes** | `(): readonly string[]`                           | Returns a frozen array of all supported RTL language codes.           |
+| **parseLocale**         | `(locale: string): ParsedLocaleInfo \| undefined` | Parses a locale string into its language and country code components. |
+| **RtlLanguageDetector** | `class`                                           | Static class with all the above as static methods.                    |
 
 ### Types
 
