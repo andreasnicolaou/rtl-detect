@@ -44,60 +44,6 @@ export class RtlLanguageDetector {
   ]);
 
   /**
-   * Auto-detects the user's preferred locale using multiple strategies, in order:
-   * 1. `navigator.languages[0]` (if available, browser only)
-   * 2. `navigator.language` (browser only)
-   * 3. Legacy IE properties: `navigator.userLanguage` or `navigator.browserLanguage` or `navigator.systemLanguage`
-   * 4. `Intl.DateTimeFormat().resolvedOptions().locale` (cross-platform, may throw)
-   * 5. `<html lang="">` attribute (browser only)
-   * 6. Returns an empty string if no locale can be detected
-   * This method is robust across browsers and Node.js. It will not throw if a step fails; it will fall back to the next available method.
-   * @returns {string} The detected locale string (e.g., 'en-US', 'ar', etc.), or an empty string if none found.
-   * @memberof RtlLanguageDetector
-   */
-  public static detectLocale(): string {
-    if (typeof navigator !== 'undefined') {
-      if (navigator.languages?.length) return navigator.languages[0];
-      if (navigator.language) return navigator.language;
-      // Legacy IE props
-      const legacyLang =
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (navigator as any)?.['userLanguage'] ||
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (navigator as any)?.['browserLanguage'] ||
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (navigator as any)?.['systemLanguage'];
-      if (legacyLang) return legacyLang;
-    }
-
-    // Try Intl API
-    try {
-      const intlLocale = Intl.DateTimeFormat().resolvedOptions().locale;
-      if (intlLocale) return intlLocale;
-    } catch {
-      /* empty */
-    }
-
-    // Try: <html lang="">
-    if (typeof document !== 'undefined') {
-      const htmlLang = document.documentElement?.lang;
-      if (htmlLang) return htmlLang;
-    }
-
-    return '';
-  }
-
-  /**
-   * Auto-detects the user's preferred text direction ('rtl' or 'ltr').
-   * @returns {'rtl' | 'ltr'} The detected text direction for the current environment.
-   * @memberof RtlLanguageDetector
-   */
-  public static detectTextDirection(): TextDirection {
-    const locale = RtlLanguageDetector.detectLocale();
-    return RtlLanguageDetector.getTextDirection(locale);
-  }
-
-  /**
    * Returns a frozen array of all supported RTL (right-to-left) language codes (ISO 639-1/2/3).
    * @returns {readonly string[]} Array of RTL language codes.
    * @memberof RtlLanguageDetector
@@ -158,7 +104,3 @@ export const parseLocale = RtlLanguageDetector.parseLocale;
 export const isRtlLanguage = RtlLanguageDetector.isRtlLanguage;
 export const getTextDirection = RtlLanguageDetector.getTextDirection;
 export const getRtlLanguageCodes = RtlLanguageDetector.getRtlLanguageCodes;
-
-// Detects the user's preferred text direction and locale
-export const detectTextDirection = RtlLanguageDetector.detectTextDirection;
-export const detectLocale = RtlLanguageDetector.detectLocale;

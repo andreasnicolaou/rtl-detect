@@ -71,8 +71,6 @@ import {
   getTextDirection,
   getRtlLanguageCodes,
   parseLocale,
-  detectLocale,
-  detectTextDirection,
   RtlLanguageDetector,
 } from '@andreasnicolaou/rtl-detect';
 
@@ -80,8 +78,6 @@ isRtlLanguage('ar'); // true
 getTextDirection('fa-IR'); // 'rtl'
 const rtlCodes = getRtlLanguageCodes();
 const parsed = parseLocale('ar-EG');
-const userLocale = detectLocale();
-const userDirection = detectTextDirection();
 RtlLanguageDetector.isRtlLanguage('he'); // true
 ```
 
@@ -93,8 +89,6 @@ const {
   getTextDirection,
   getRtlLanguageCodes,
   parseLocale,
-  detectLocale,
-  detectTextDirection,
   RtlLanguageDetector,
 } = require('@andreasnicolaou/rtl-detect');
 
@@ -102,8 +96,6 @@ isRtlLanguage('ar'); // true
 getTextDirection('fa-IR'); // 'rtl'
 const rtlCodes = getRtlLanguageCodes();
 const parsed = parseLocale('ar-EG');
-const userLocale = detectLocale();
-const userDirection = detectTextDirection();
 RtlLanguageDetector.isRtlLanguage('he'); // true
 ```
 
@@ -112,30 +104,24 @@ RtlLanguageDetector.isRtlLanguage('he'); // true
 ```html
 <script src="https://unpkg.com/@andreasnicolaou/rtl-detect/dist/index.umd.min.js"></script>
 <script>
-  // Available as `rtlLanguageDetector` on the global scope
-  const { isRtlLanguage, getTextDirection, getRtlLanguageCodes, parseLocale, detectLocale, detectTextDirection } =
-    rtlLanguageDetector;
+  const { isRtlLanguage, getTextDirection, getRtlLanguageCodes, parseLocale } = rtlLanguageDetector;
   isRtlLanguage('ar'); // true
   getTextDirection('fa-IR'); // 'rtl'
   const rtlCodes = getRtlLanguageCodes();
   const parsed = parseLocale('ar-EG');
-  const userLocale = detectLocale();
-  const userDirection = detectTextDirection();
   rtlLanguageDetector.isRtlLanguage('he'); // true
 </script>
 ```
 
 ## API
 
-| Function/Export         | Signature                                         | Description                                                                   |
-| ----------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------- |
-| **isRtlLanguage**       | `(locale: string): boolean`                       | Returns `true` if the locale or language code is right-to-left.               |
-| **getTextDirection**    | `(locale: string): 'rtl' \| 'ltr'`                | Returns the text direction for the given locale.                              |
-| **getRtlLanguageCodes** | `(): readonly string[]`                           | Returns a frozen array of all supported RTL language codes.                   |
-| **parseLocale**         | `(locale: string): ParsedLocaleInfo \| undefined` | Parses a locale string into its language and country code components.         |
-| **detectLocale**        | `(): string`                                      | Auto-detects the user's preferred locale (browser/Node.js/DOM/Intl fallback). |
-| **detectTextDirection** | `(): 'rtl' \| 'ltr'`                              | Auto-detects the user's preferred text direction.                             |
-| **RtlLanguageDetector** | `class`                                           | Static class with all the above as static methods.                            |
+| Function/Export         | Signature                                         | Description                                                           |
+| ----------------------- | ------------------------------------------------- | --------------------------------------------------------------------- |
+| **isRtlLanguage**       | `(locale: string): boolean`                       | Returns `true` if the locale or language code is right-to-left.       |
+| **getTextDirection**    | `(locale: string): 'rtl' \| 'ltr'`                | Returns the text direction for the given locale.                      |
+| **getRtlLanguageCodes** | `(): readonly string[]`                           | Returns a frozen array of all supported RTL language codes.           |
+| **parseLocale**         | `(locale: string): ParsedLocaleInfo \| undefined` | Parses a locale string into its language and country code components. |
+| **RtlLanguageDetector** | `class`                                           | Static class with all the above as static methods.                    |
 
 ### Types
 
@@ -146,7 +132,7 @@ RtlLanguageDetector.isRtlLanguage('he'); // true
 
 ## How it works
 
-This library uses a standards-based, immutable list of RTL language codes (Unicode/ISO-compliant) to determine text direction for any locale or language code. It works in Node.js, browsers, and TypeScript projects, and is fully type-safe.
+This library uses an immutable list of RTL language codes (Unicode/ISO-compliant) to determine text direction for any locale or language code. It works in Node.js, browsers, and TypeScript projects, and is fully type-safe.
 
 ## License
 
