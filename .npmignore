@@ -1,0 +1,15 @@
+.idea
+/src
+.prettierrc
+.github
+.prettierignore
+eslint.config.mjs
+
+# Build and development files
+rollup.config.js
+tsconfig.json
+temp/
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+SECURITY.md
+codecov.yaml
