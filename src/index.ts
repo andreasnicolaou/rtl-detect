@@ -11,12 +11,16 @@ export type TextDirection = 'rtl' | 'ltr';
  * @description A library for detecting RTL (Right-to-Left) languages and their text direction.
  */
 export class RtlLanguageDetector {
-  private static readonly REGEX_PARSE_LOCALE = /^([a-zA-Z]*)([_\-a-zA-Z]*)$/;
+  // Permissive: legacy/edge-case fallback
+  private static readonly REGEX_PARSE_LOCALE_PERMISSIVE = /^([a-zA-Z]*)([_\-a-zA-Z]*)$/;
+  // Strict: language (2-3 letters), optional country (2-3 letters), optional variant/script (alphanumeric)
+  private static readonly REGEX_PARSE_LOCALE_STRICT =
+    /^([a-zA-Z]{2,3})(?:[-_]([a-zA-Z]{2,3}))?(?:[-_]([a-zA-Z0-9]+))?$/;
   // References:
   // https://help.smartling.com/hc/en-us/articles/1260802028830-Right-to-left-RTL-Languages
   // https://en.wikipedia.org/wiki/Script_(Unicode)
   // https://en.wikipedia.org/wiki/Writing_system#Directionality_and_orientation
-  private static readonly RTL_LANGUAGE_CODES = Object.freeze([
+  private static readonly RTL_LANGUAGE_CODES = new Set([
     'ae', // Avestan
     'ar', // Arabic (generic)
     'arc', // Aramaic
@@ -49,7 +53,7 @@ export class RtlLanguageDetector {
    * @memberof RtlLanguageDetector
    */
   public static getRtlLanguageCodes(): readonly string[] {
-    return RtlLanguageDetector.RTL_LANGUAGE_CODES;
+    return Object.freeze(Array.from(RtlLanguageDetector.RTL_LANGUAGE_CODES));
   }
 
   /**
@@ -70,10 +74,7 @@ export class RtlLanguageDetector {
    */
   public static isRtlLanguage(locale: string): boolean {
     const parsed = RtlLanguageDetector.parseLocale(locale);
-    if (!parsed) {
-      return false;
-    }
-    return RtlLanguageDetector.RTL_LANGUAGE_CODES.includes(parsed.language);
+    return parsed ? RtlLanguageDetector.RTL_LANGUAGE_CODES.has(parsed.language) : false;
   }
 
   /**
@@ -83,14 +84,14 @@ export class RtlLanguageDetector {
    * @memberof RtlLanguageDetector
    */
   public static parseLocale(locale: string): ParsedLocaleInfo | undefined {
-    if (!locale) {
-      return undefined;
-    }
-    const matches = RtlLanguageDetector.REGEX_PARSE_LOCALE.exec(locale);
-    if (!matches) {
-      return undefined;
-    }
+    if (!locale) return undefined;
+    // Try strict first, fallback to permissive/legacy
+    const matches =
+      RtlLanguageDetector.REGEX_PARSE_LOCALE_STRICT.exec(locale) ??
+      RtlLanguageDetector.REGEX_PARSE_LOCALE_PERMISSIVE.exec(locale);
+    if (!matches?.[1]) return undefined;
     const language = (matches[1] || '').toLowerCase();
+    if (language.length < 2) return undefined;
     const rawCountryCode = matches[2] || '';
     const countryCode = rawCountryCode.replace(/[-_]/g, '').toUpperCase() || undefined;
     return {

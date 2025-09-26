@@ -1,3 +1,8 @@
+test('should return undefined when matches[1] is empty string (regex fallback)', () => {
+  expect(parseLocale('_')).toBeUndefined();
+  expect(parseLocale('-')).toBeUndefined();
+  expect(parseLocale('')).toBeUndefined();
+});
 import {
   isRtlLanguage,
   getTextDirection,
@@ -72,6 +77,14 @@ describe('RtlLanguageDetector', () => {
     describe('edge cases', () => {
       test('should return false for empty string', () => {
         expect(RtlLanguageDetector.isRtlLanguage('')).toBe(false);
+      });
+
+      test('should return undefined for single-character language code', () => {
+        expect(parseLocale('a-US')).toBeUndefined();
+        expect(parseLocale('a')).toBeUndefined();
+        expect(parseLocale('_')).toBeUndefined();
+        expect(parseLocale('-')).toBeUndefined();
+        expect(parseLocale('')).toBeUndefined();
       });
 
       test('should return false for invalid locale', () => {
@@ -153,9 +166,9 @@ describe('RtlLanguageDetector', () => {
     });
   });
 
-  describe('private method validation (through public interface)', () => {
+  describe('method validation (through public interface)', () => {
     test('should handle locale parsing correctly', () => {
-      // Test through public methods to verify private parseLocale works
+      // Test through public methods to verify parseLocale works
       expect(RtlLanguageDetector.isRtlLanguage('ar-EG-x-variant')).toBe(true);
       expect(RtlLanguageDetector.isRtlLanguage('en-US-x-variant')).toBe(false);
     });
@@ -220,26 +233,31 @@ describe('RtlLanguageDetector', () => {
     });
 
     test('parseLocale handles missing language part', () => {
-      expect(parseLocale('-US')).toEqual({ language: '', countryCode: 'US' });
-      expect(parseLocale('_')).toEqual({ language: '', countryCode: undefined });
+      expect(parseLocale('-US')).toBeUndefined();
+      expect(parseLocale('_')).toBeUndefined();
     });
 
-    describe('Consistency across multiple calls', () => {
-      test.each(['ar', 'en', 'he', 'fr', 'fa', 'de'])('should be consistent across multiple calls %s', (locale) => {
-        const result1 = RtlLanguageDetector.isRtlLanguage(locale);
-        const result2 = RtlLanguageDetector.isRtlLanguage(locale);
-        const result3 = RtlLanguageDetector.isRtlLanguage(locale);
+    test('parseLocale valid cases', () => {
+      expect(parseLocale('en-US')).toEqual({ language: 'en', countryCode: 'US' });
+      expect(parseLocale('ar')).toEqual({ language: 'ar', countryCode: undefined });
+    });
+  });
 
-        expect(result1).toBe(result2);
-        expect(result2).toBe(result3);
+  describe('Consistency across multiple calls', () => {
+    test.each(['ar', 'en', 'he', 'fr', 'fa', 'de'])('should be consistent across multiple calls %s', (locale) => {
+      const result1 = RtlLanguageDetector.isRtlLanguage(locale);
+      const result2 = RtlLanguageDetector.isRtlLanguage(locale);
+      const result3 = RtlLanguageDetector.isRtlLanguage(locale);
 
-        const dir1 = RtlLanguageDetector.getTextDirection(locale);
-        const dir2 = RtlLanguageDetector.getTextDirection(locale);
-        const dir3 = RtlLanguageDetector.getTextDirection(locale);
+      expect(result1).toBe(result2);
+      expect(result2).toBe(result3);
 
-        expect(dir1).toBe(dir2);
-        expect(dir2).toBe(dir3);
-      });
+      const dir1 = RtlLanguageDetector.getTextDirection(locale);
+      const dir2 = RtlLanguageDetector.getTextDirection(locale);
+      const dir3 = RtlLanguageDetector.getTextDirection(locale);
+
+      expect(dir1).toBe(dir2);
+      expect(dir2).toBe(dir3);
     });
   });
 });
