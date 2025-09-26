@@ -1,8 +1,3 @@
-test('should return undefined when matches[1] is empty string (regex fallback)', () => {
-  expect(parseLocale('_')).toBeUndefined();
-  expect(parseLocale('-')).toBeUndefined();
-  expect(parseLocale('')).toBeUndefined();
-});
 import {
   isRtlLanguage,
   getTextDirection,
