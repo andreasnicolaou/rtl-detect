@@ -32,7 +32,7 @@ export class RtlLanguageDetector {
     'ku', // Kurdish (generic)
     'mzn', // Mazanderani
     'nqo', // N'Ko
-    'pk-PK', // Panjabi-Shahmuki (Pakistan)
+    'pk', // Panjabi-Shahmuki (generic)
     'pnb', // Western Punjabi
     'prs', // Darī
     'ps', // Pashto
