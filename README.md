@@ -1,6 +1,6 @@
 # @andreasnicolaou/rtl-detect
 
-Modern, standards-based RTL (Right-to-Left) language detection for JavaScript/TypeScript. Pass any locale to get its text direction, or use auto-detection in browsers/Node.js to get the user's preferred direction. Detects if a locale is RTL, gets text direction, and lists all Unicode/ISO RTL languages.
+Modern, standards-based RTL (Right-to-Left) language detection for JavaScript/TypeScript. Detects if a locale is RTL, gets text direction, and lists all Unicode/ISO RTL languages.
 
 ![TypeScript](https://img.shields.io/badge/TS-TypeScript-3178c6?logo=typescript&logoColor=white)
 ![GitHub contributors](https://img.shields.io/github/contributors/andreasnicolaou/rtl-detect)
