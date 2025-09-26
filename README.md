@@ -141,10 +141,3 @@ MIT
 ## Contributing
 
 Contributions are welcome! Please open issues or pull requests for improvements or new features.
-
-## Examples
-
-```js
-parseLocale('en_US.UTF-8'); // { language: 'en', countryCode: 'US' }
-parseLocale('ar_EG@calendar=islamic'); // { language: 'ar', countryCode: 'EG' }
-```
