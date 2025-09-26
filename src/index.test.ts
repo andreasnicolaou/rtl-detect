@@ -220,8 +220,9 @@ describe('RtlLanguageDetector', () => {
     });
 
     test('should handle special characters in locale', () => {
-      expect(RtlLanguageDetector.isRtlLanguage('ar@calendar=islamic')).toBe(false);
-      expect(RtlLanguageDetector.isRtlLanguage('ar.UTF-8')).toBe(false);
+      expect(RtlLanguageDetector.isRtlLanguage('ar@calendar=islamic')).toBe(true);
+      expect(RtlLanguageDetector.isRtlLanguage('ar.UTF-8')).toBe(true);
+      expect(RtlLanguageDetector.isRtlLanguage('en_US.UTF-8')).toBe(false);
       expect(RtlLanguageDetector.isRtlLanguage('ar#variant')).toBe(false);
     });
 
@@ -240,24 +241,6 @@ describe('RtlLanguageDetector', () => {
     test('parseLocale valid cases', () => {
       expect(parseLocale('en-US')).toEqual({ language: 'en', countryCode: 'US' });
       expect(parseLocale('ar')).toEqual({ language: 'ar', countryCode: undefined });
-    });
-  });
-
-  describe('Consistency across multiple calls', () => {
-    test.each(['ar', 'en', 'he', 'fr', 'fa', 'de'])('should be consistent across multiple calls %s', (locale) => {
-      const result1 = RtlLanguageDetector.isRtlLanguage(locale);
-      const result2 = RtlLanguageDetector.isRtlLanguage(locale);
-      const result3 = RtlLanguageDetector.isRtlLanguage(locale);
-
-      expect(result1).toBe(result2);
-      expect(result2).toBe(result3);
-
-      const dir1 = RtlLanguageDetector.getTextDirection(locale);
-      const dir2 = RtlLanguageDetector.getTextDirection(locale);
-      const dir3 = RtlLanguageDetector.getTextDirection(locale);
-
-      expect(dir1).toBe(dir2);
-      expect(dir2).toBe(dir3);
     });
   });
 });

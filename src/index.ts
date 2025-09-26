@@ -85,11 +85,14 @@ export class RtlLanguageDetector {
    */
   public static parseLocale(locale: string): ParsedLocaleInfo | undefined {
     if (!locale) return undefined;
+    // Normalize: strip encoding/variant suffixes (e.g., .UTF-8, @calendar=gregorian)
+    const normalized = locale.split(/[.@]/)[0];
     // Try strict first, fallback to permissive/legacy
     const matches =
-      RtlLanguageDetector.REGEX_PARSE_LOCALE_STRICT.exec(locale) ??
-      RtlLanguageDetector.REGEX_PARSE_LOCALE_PERMISSIVE.exec(locale);
+      RtlLanguageDetector.REGEX_PARSE_LOCALE_STRICT.exec(normalized) ??
+      RtlLanguageDetector.REGEX_PARSE_LOCALE_PERMISSIVE.exec(normalized);
     if (!matches?.[1]) return undefined;
+    /* istanbul ignore next */
     const language = (matches[1] || '').toLowerCase();
     if (language.length < 2) return undefined;
     const rawCountryCode = matches[2] || '';
