@@ -1,6 +1,6 @@
 {
   "name": "@andreasnicolaou/rtl-detect",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Modern, standards-based RTL (Right-to-Left) language detection for JavaScript/TypeScript. Detects if a locale is RTL, gets text direction, and lists all Unicode/ISO RTL languages.",
   "main": "dist/index.js",
   "module": "dist/index.js",
