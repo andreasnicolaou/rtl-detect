@@ -2,6 +2,7 @@ import {
   isRtlLanguage,
   getTextDirection,
   getRtlLanguageCodes,
+  getRtlScriptCodes,
   TextDirection,
   RtlLanguageDetector,
   parseLocale,
@@ -157,7 +158,67 @@ describe('RtlLanguageDetector', () => {
 
     test('should have expected number of RTL languages', () => {
       const rtlLanguages = RtlLanguageDetector.getRtlLanguageCodes();
-      expect(rtlLanguages.length).toBe(24);
+      expect(rtlLanguages.length).toBe(22);
+    });
+
+    test('should not contain bogus/non-language codes', () => {
+      const rtlLanguages = RtlLanguageDetector.getRtlLanguageCodes();
+      // 'kd' is not a valid ISO 639 code; 'pk' is a country code, not a language.
+      expect(rtlLanguages).not.toContain('kd');
+      expect(rtlLanguages).not.toContain('pk');
+    });
+  });
+
+  describe('getRtlScriptCodes', () => {
+    test('should return a frozen array of RTL script codes', () => {
+      const rtlScripts = RtlLanguageDetector.getRtlScriptCodes();
+      const namedExportScripts = getRtlScriptCodes();
+
+      expect(Array.isArray(rtlScripts)).toBe(true);
+      expect(rtlScripts).toEqual(namedExportScripts);
+      expect(rtlScripts).toContain('Arab');
+      expect(rtlScripts).toContain('Hebr');
+      expect(rtlScripts).toContain('Syrc');
+      expect(rtlScripts).toContain('Thaa');
+      expect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (rtlScripts as any).push('Test');
+      }).toThrow();
+    });
+  });
+
+  describe('script-based detection', () => {
+    test('should detect RTL script regardless of base language', () => {
+      // Azerbaijani / Punjabi are LTR by language but RTL in Arabic script.
+      expect(RtlLanguageDetector.isRtlLanguage('az-Arab')).toBe(true);
+      expect(RtlLanguageDetector.isRtlLanguage('pa-Arab')).toBe(true);
+      expect(RtlLanguageDetector.isRtlLanguage('az-Arab-IR')).toBe(true);
+      expect(RtlLanguageDetector.getTextDirection('pa-Arab-PK')).toBe('rtl');
+    });
+
+    test('should treat non-RTL scripts as LTR', () => {
+      // Same languages in their LTR scripts.
+      expect(RtlLanguageDetector.isRtlLanguage('az-Latn')).toBe(false);
+      expect(RtlLanguageDetector.isRtlLanguage('pa-Guru')).toBe(false);
+      expect(RtlLanguageDetector.isRtlLanguage('sr-Cyrl')).toBe(false);
+    });
+
+    test('should be case-insensitive for script subtags', () => {
+      expect(RtlLanguageDetector.isRtlLanguage('az-arab')).toBe(true);
+      expect(RtlLanguageDetector.isRtlLanguage('az-ARAB')).toBe(true);
+    });
+
+    test('parseLocale extracts script in title case', () => {
+      expect(parseLocale('az-arab-ir')).toEqual({
+        language: 'az',
+        script: 'Arab',
+        countryCode: 'IR',
+      });
+      expect(parseLocale('zh-Hans-CN')).toEqual({
+        language: 'zh',
+        script: 'Hans',
+        countryCode: 'CN',
+      });
     });
   });
 
