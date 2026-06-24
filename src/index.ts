@@ -14,8 +14,9 @@ export type TextDirection = 'rtl' | 'ltr';
 export class RtlLanguageDetector {
   // Language subtag: 2-8 letters (ISO 639-1/2/3, with room for registered subtags).
   private static readonly REGEX_LANGUAGE = /^[a-zA-Z]{2,8}$/;
-  // Region subtag: 2-3 letters (ISO 3166-1 alpha-2/3) or 3 digits (UN M.49).
-  private static readonly REGEX_REGION = /^([a-zA-Z]{2,3}|\d{3})$/;
+  // Region subtag: 2 letters (ISO 3166-1 alpha-2) or 3 digits (UN M.49), per BCP 47.
+  // 3-letter subtags are extlangs/variants, not regions, so they are excluded here.
+  private static readonly REGEX_REGION = /^([a-zA-Z]{2}|\d{3})$/;
   // Script subtag: exactly 4 letters (ISO 15924), e.g. Arab, Hebr.
   private static readonly REGEX_SCRIPT = /^[a-zA-Z]{4}$/;
   // References:
@@ -112,8 +113,10 @@ export class RtlLanguageDetector {
 
   /**
    * Determines if a locale or language code is right-to-left (RTL).
-   * A locale is RTL if its base language is an RTL language, or if it carries an
-   * RTL script subtag (e.g. 'az-Arab', 'pa-Arab').
+   * When a script subtag is present it strictly dictates the direction (the
+   * writing system, not the base language, determines directionality), so e.g.
+   * 'az-Arab' is RTL while 'ku-Latn' is LTR even though 'ku' is an RTL language.
+   * Otherwise the base language determines the direction.
    * @param {string} locale - The locale or language code (e.g., 'ar', 'fa-IR', 'az-Arab').
    * @returns {boolean} True if the language is RTL, false otherwise.
    * @memberof RtlLanguageDetector
@@ -121,7 +124,9 @@ export class RtlLanguageDetector {
   public static isRtlLanguage(locale: string): boolean {
     const parsed = RtlLanguageDetector.parseLocale(locale);
     if (!parsed) return false;
-    if (parsed.script && RtlLanguageDetector.RTL_SCRIPT_CODES.has(parsed.script)) return true;
+    if (parsed.script) {
+      return RtlLanguageDetector.RTL_SCRIPT_CODES.has(parsed.script);
+    }
     return RtlLanguageDetector.RTL_LANGUAGE_CODES.has(parsed.language);
   }
 

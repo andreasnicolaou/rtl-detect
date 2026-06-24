@@ -203,6 +203,13 @@ describe('RtlLanguageDetector', () => {
       expect(RtlLanguageDetector.isRtlLanguage('sr-Cyrl')).toBe(false);
     });
 
+    test('explicit LTR script overrides a default-RTL base language', () => {
+      // 'ku' and 'ug' are RTL languages, but in Latin script they are LTR.
+      expect(RtlLanguageDetector.isRtlLanguage('ku-Latn')).toBe(false);
+      expect(RtlLanguageDetector.isRtlLanguage('ug-Latn')).toBe(false);
+      expect(RtlLanguageDetector.getTextDirection('ku-Latn')).toBe('ltr');
+    });
+
     test('should be case-insensitive for script subtags', () => {
       expect(RtlLanguageDetector.isRtlLanguage('az-arab')).toBe(true);
       expect(RtlLanguageDetector.isRtlLanguage('az-ARAB')).toBe(true);
