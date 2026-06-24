@@ -21,8 +21,9 @@ Modern, standards-based RTL (Right-to-Left) language detection for JavaScript/Ty
 ## Features
 
 - Detect if a locale or language code is right-to-left (RTL)
+- Script-aware: detects RTL by language _or_ script subtag (e.g. `az-Arab`, `pa-Arab`)
 - Get the text direction (`'rtl'` or `'ltr'`) for any locale
-- List all supported RTL language codes (Unicode/ISO-compliant)
+- List all supported RTL language codes (ISO 639) and script codes (ISO 15924)
 - Fully immutable, type-safe, and fast
 - Works in Node.js, browsers, and TypeScript projects
 
@@ -70,13 +71,16 @@ import {
   isRtlLanguage,
   getTextDirection,
   getRtlLanguageCodes,
+  getRtlScriptCodes,
   parseLocale,
   RtlLanguageDetector,
 } from '@andreasnicolaou/rtl-detect';
 
 isRtlLanguage('ar'); // true
+isRtlLanguage('az-Arab'); // true (RTL by script)
 getTextDirection('fa-IR'); // 'rtl'
 const rtlCodes = getRtlLanguageCodes();
+const rtlScripts = getRtlScriptCodes();
 const parsed = parseLocale('ar-EG');
 RtlLanguageDetector.isRtlLanguage('he'); // true
 ```
@@ -88,13 +92,16 @@ const {
   isRtlLanguage,
   getTextDirection,
   getRtlLanguageCodes,
+  getRtlScriptCodes,
   parseLocale,
   RtlLanguageDetector,
 } = require('@andreasnicolaou/rtl-detect');
 
 isRtlLanguage('ar'); // true
+isRtlLanguage('az-Arab'); // true (RTL by script)
 getTextDirection('fa-IR'); // 'rtl'
 const rtlCodes = getRtlLanguageCodes();
+const rtlScripts = getRtlScriptCodes();
 const parsed = parseLocale('ar-EG');
 RtlLanguageDetector.isRtlLanguage('he'); // true
 ```
@@ -104,10 +111,12 @@ RtlLanguageDetector.isRtlLanguage('he'); // true
 ```html
 <script src="https://unpkg.com/@andreasnicolaou/rtl-detect/dist/index.umd.min.js"></script>
 <script>
-  const { isRtlLanguage, getTextDirection, getRtlLanguageCodes, parseLocale } = rtlLanguageDetector;
+  const { isRtlLanguage, getTextDirection, getRtlLanguageCodes, getRtlScriptCodes, parseLocale } = rtlLanguageDetector;
   isRtlLanguage('ar'); // true
+  isRtlLanguage('az-Arab'); // true (RTL by script)
   getTextDirection('fa-IR'); // 'rtl'
   const rtlCodes = getRtlLanguageCodes();
+  const rtlScripts = getRtlScriptCodes();
   const parsed = parseLocale('ar-EG');
   rtlLanguageDetector.isRtlLanguage('he'); // true
 </script>
@@ -115,24 +124,25 @@ RtlLanguageDetector.isRtlLanguage('he'); // true
 
 ## API
 
-| Function/Export         | Signature                                         | Description                                                                                                                                                   |
-| ----------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **isRtlLanguage**       | `(locale: string): boolean`                       | Returns `true` if the locale or language code is right-to-left.                                                                                               |
-| **getTextDirection**    | `(locale: string): 'rtl' \| 'ltr'`                | Returns the text direction for the given locale.                                                                                                              |
-| **getRtlLanguageCodes** | `(): readonly string[]`                           | Returns a frozen array of all supported RTL language codes.                                                                                                   |
-| **parseLocale**         | `(locale: string): ParsedLocaleInfo \| undefined` | Parses a locale string into its language and country code components. Automatically strips encoding/variant suffixes (e.g., `.UTF-8`, `@calendar=gregorian`). |
-| **RtlLanguageDetector** | `class`                                           | Static class with all the above as static methods.                                                                                                            |
+| Function/Export         | Signature                                         | Description                                                                                                                                            |
+| ----------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **isRtlLanguage**       | `(locale: string): boolean`                       | Returns `true` if the locale is right-to-left — by base language _or_ RTL script subtag (e.g. `az-Arab`).                                              |
+| **getTextDirection**    | `(locale: string): 'rtl' \| 'ltr'`                | Returns the text direction for the given locale.                                                                                                       |
+| **getRtlLanguageCodes** | `(): readonly string[]`                           | Returns a frozen array of all supported RTL language codes (ISO 639).                                                                                  |
+| **getRtlScriptCodes**   | `(): readonly string[]`                           | Returns a frozen array of all supported RTL script codes (ISO 15924, e.g. `Arab`, `Hebr`).                                                             |
+| **parseLocale**         | `(locale: string): ParsedLocaleInfo \| undefined` | Parses a locale into its `language`, `script`, and `countryCode` components. Strips encoding/variant suffixes (e.g., `.UTF-8`, `@calendar=gregorian`). |
+| **RtlLanguageDetector** | `class`                                           | Static class with all the above as static methods.                                                                                                     |
 
 ### Types
 
-| Type               | Definition                                   | Description                                                  |
-| ------------------ | -------------------------------------------- | ------------------------------------------------------------ |
-| `TextDirection`    | `'rtl' \| 'ltr'`                             | Text direction, either right-to-left or left-to-right        |
-| `ParsedLocaleInfo` | `{ language: string; countryCode?: string }` | Parsed locale object with language and optional country code |
+| Type               | Definition                                                    | Description                                                           |
+| ------------------ | ------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `TextDirection`    | `'rtl' \| 'ltr'`                                              | Text direction, either right-to-left or left-to-right                 |
+| `ParsedLocaleInfo` | `{ language: string; script?: string; countryCode?: string }` | Parsed locale: language plus optional script and country code subtags |
 
 ## How it works
 
-This library uses an immutable list of RTL language codes (Unicode/ISO-compliant) to determine text direction for any locale or language code. It works in Node.js, browsers, and TypeScript projects, and is fully type-safe.
+This library parses a locale into its BCP 47 subtags (language, script, region) and checks them against immutable, ISO-compliant sets: RTL languages (ISO 639) and RTL scripts (ISO 15924). A locale is reported as RTL if its base language is RTL _or_ it carries an RTL script subtag (e.g. `az-Arab`), so script-driven cases are handled even when the base language is otherwise LTR. It works in Node.js, browsers, and TypeScript projects, and is fully type-safe.
 
 ## License
 
