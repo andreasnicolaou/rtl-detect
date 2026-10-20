@@ -36,6 +36,11 @@ describe('RtlLanguageDetector', () => {
         { locale: 'pnb', name: 'Western Punjabi' },
         { locale: 'prs', name: 'Darī' },
         { locale: 'syr', name: 'Syriac' },
+        { locale: 'azb', name: 'South Azerbaijani' },
+        { locale: 'ji', name: 'Yiddish (legacy)' },
+        { locale: 'ks', name: 'Kashmiri' },
+        { locale: 'lrc', name: 'Northern Luri' },
+        { locale: 'sdh', name: 'Southern Kurdish' },
       ])('should detect $name ($locale) as RTL', ({ locale }: { locale: string }) => {
         expect(RtlLanguageDetector.isRtlLanguage(locale)).toBe(true);
         expect(isRtlLanguage(locale)).toBe(true);
@@ -158,7 +163,7 @@ describe('RtlLanguageDetector', () => {
 
     test('should have expected number of RTL languages', () => {
       const rtlLanguages = RtlLanguageDetector.getRtlLanguageCodes();
-      expect(rtlLanguages.length).toBe(22);
+      expect(rtlLanguages.length).toBe(27);
     });
 
     test('should not contain bogus/non-language codes', () => {
@@ -299,6 +304,14 @@ describe('RtlLanguageDetector', () => {
     test('parseLocale handles missing language part', () => {
       expect(parseLocale('-US')).toBeUndefined();
       expect(parseLocale('_')).toBeUndefined();
+    });
+
+    test('handles non-string input from untyped callers', () => {
+      for (const input of [123, null, undefined, {}, ['ar']]) {
+        expect(parseLocale(input as unknown as string)).toBeUndefined();
+        expect(isRtlLanguage(input as unknown as string)).toBe(false);
+        expect(getTextDirection(input as unknown as string)).toBe('ltr');
+      }
     });
 
     test('parseLocale valid cases', () => {

@@ -91,13 +91,19 @@ export default [
       terser(),
     ],
   },
-  // Type definitions
+  // Type definitions (.d.ts for ESM, .d.cts for CommonJS)
   {
     input: 'src/index.ts',
-    output: {
-      file: 'dist/index.d.ts',
-      format: 'es',
-    },
+    output: [
+      {
+        file: 'dist/index.d.ts',
+        format: 'es',
+      },
+      {
+        file: 'dist/index.d.cts',
+        format: 'es',
+      },
+    ],
     plugins: [dts()],
   },
 ];
