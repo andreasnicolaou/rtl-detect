@@ -27,6 +27,7 @@ export class RtlLanguageDetector {
     'ae', // Avestan
     'ar', // Arabic (generic)
     'arc', // Aramaic
+    'azb', // South Azerbaijani
     'bcc', // Southern Balochi
     'bqi', // Bakthiari
     'ckb', // Sorani Kurdish
@@ -35,13 +36,17 @@ export class RtlLanguageDetector {
     'glk', // Gilaki
     'he', // Hebrew (he)
     'iw', // Hebrew (iw, legacy)
+    'ji', // Yiddish (ji, legacy)
+    'ks', // Kashmiri
     'ku', // Kurdish (generic)
+    'lrc', // Northern Luri
     'mzn', // Mazanderani
     'nqo', // N'Ko
     'pnb', // Western Punjabi
     'prs', // Darī
     'ps', // Pashto
     'sd', // Sindhi
+    'sdh', // Southern Kurdish
     'syr', // Syriac
     'ug', // Uighur; Uyghur
     'ur', // Urdu
@@ -141,7 +146,7 @@ export class RtlLanguageDetector {
    * @memberof RtlLanguageDetector
    */
   public static parseLocale(locale: string): ParsedLocaleInfo | undefined {
-    if (!locale) return undefined;
+    if (typeof locale !== 'string' || !locale) return undefined;
     // Normalize: strip encoding/variant suffixes (e.g., .UTF-8, @calendar=gregorian)
     const normalized = locale.split(/[.@]/)[0];
     const parts = normalized.split(/[-_]/);
